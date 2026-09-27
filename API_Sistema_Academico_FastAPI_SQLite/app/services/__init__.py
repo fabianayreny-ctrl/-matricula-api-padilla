@@ -1,0 +1,2 @@
+"""Reglas de negocio reutilizables."""
+

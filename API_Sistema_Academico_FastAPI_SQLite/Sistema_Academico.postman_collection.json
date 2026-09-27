@@ -1,0 +1,364 @@
+{
+  "info": {
+    "name": "Sistema Académico - FastAPI y SQLite",
+    "description": "Colección didáctica para Programación II. Incluye CRUD, relaciones, matrícula, calificaciones, reportes y casos de error controlados.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "api",
+      "value": "{{base_url}}/api/v1"
+    },
+    {
+      "key": "estudiante_nuevo_id",
+      "value": "6"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Inicio y dashboard",
+      "item": [
+        {
+          "name": "Verificar API",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/"
+          }
+        },
+        {
+          "name": "Comprobar salud",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/salud"
+          }
+        },
+        {
+          "name": "Dashboard académico",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/reportes/dashboard"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Catálogos",
+      "item": [
+        {
+          "name": "Listar carreras",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/carreras"
+          }
+        },
+        {
+          "name": "Crear carrera",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"II\",\n  \"nombre\": \"Ingeniería Industrial\",\n  \"duracion_anios\": 5,\n  \"activo\": true\n}"
+            },
+            "url": "{{api}}/carreras"
+          }
+        },
+        {
+          "name": "Listar docentes",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/docentes"
+          }
+        },
+        {
+          "name": "Listar asignaturas",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/asignaturas"
+          }
+        },
+        {
+          "name": "Listar períodos",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/periodos"
+          }
+        },
+        {
+          "name": "Listar aulas",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/aulas"
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Estudiantes CRUD",
+      "item": [
+        {
+          "name": "Listar estudiantes",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/estudiantes"
+          }
+        },
+        {
+          "name": "Buscar estudiantes activos de Sistemas",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/estudiantes?buscar=a&carrera_id=1&estado=ACTIVO"
+          }
+        },
+        {
+          "name": "Obtener estudiante 1",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/estudiantes/1"
+          }
+        },
+        {
+          "name": "Crear estudiante y guardar su ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('estudiante_nuevo_id', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cuenta\": \"20262020\",\n  \"nombres\": \"Pedro\",\n  \"apellidos\": \"Castillo\",\n  \"correo\": \"pedro@universidad.edu\",\n  \"telefono\": \"9999-2020\",\n  \"fecha_nacimiento\": \"2004-06-15\",\n  \"carrera_id\": 1,\n  \"estado\": \"ACTIVO\"\n}"
+            },
+            "url": "{{api}}/estudiantes"
+          }
+        },
+        {
+          "name": "Actualizar estudiante creado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cuenta\": \"20262020\",\n  \"nombres\": \"Pedro Antonio\",\n  \"apellidos\": \"Castillo\",\n  \"correo\": \"pedro.castillo@universidad.edu\",\n  \"telefono\": \"9999-2020\",\n  \"fecha_nacimiento\": \"2004-06-15\",\n  \"carrera_id\": 1,\n  \"estado\": \"ACTIVO\"\n}"
+            },
+            "url": "{{api}}/estudiantes/{{estudiante_nuevo_id}}"
+          }
+        },
+        {
+          "name": "Eliminar estudiante creado",
+          "request": {
+            "method": "DELETE",
+            "url": "{{api}}/estudiantes/{{estudiante_nuevo_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Secciones y oferta",
+      "item": [
+        {
+          "name": "Listar todas las secciones",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/secciones"
+          }
+        },
+        {
+          "name": "Secciones disponibles del período activo",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/secciones/disponibles"
+          }
+        },
+        {
+          "name": "Obtener sección 2",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/secciones/2"
+          }
+        },
+        {
+          "name": "Crear sección",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"1500\",\n  \"asignatura_id\": 1,\n  \"docente_id\": 2,\n  \"periodo_id\": 2,\n  \"aula_id\": 2,\n  \"dias\": \"MA-JU\",\n  \"hora_inicio\": \"15:00\",\n  \"hora_fin\": \"17:00\",\n  \"cupo_maximo\": 25,\n  \"estado\": \"ABIERTA\"\n}"
+            },
+            "url": "{{api}}/secciones"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Matrículas y calificaciones",
+      "item": [
+        {
+          "name": "Listar matrículas",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/matriculas"
+          }
+        },
+        {
+          "name": "Matricular a Ana en Bases de Datos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudiante_id\": 1,\n  \"seccion_id\": 3\n}"
+            },
+            "url": "{{api}}/matriculas"
+          }
+        },
+        {
+          "name": "Ver matrículas de Ana",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/matriculas?estudiante_id=1"
+          }
+        },
+        {
+          "name": "Calificar matrícula 3",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"primer_parcial\": 80,\n  \"segundo_parcial\": 70,\n  \"tercer_parcial\": 90,\n  \"observacion\": \"Buen desempeño\"\n}"
+            },
+            "url": "{{api}}/calificaciones/matricula/3"
+          }
+        },
+        {
+          "name": "Consultar calificación de matrícula 3",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/calificaciones/matricula/3"
+          }
+        },
+        {
+          "name": "Cancelar matrícula 5",
+          "request": {
+            "method": "PATCH",
+            "url": "{{api}}/matriculas/5/cancelar"
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Reportes",
+      "item": [
+        {
+          "name": "Historial de Ana",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/reportes/historial-estudiante/1"
+          }
+        },
+        {
+          "name": "Lista de Programación II",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/reportes/lista-seccion/2"
+          }
+        },
+        {
+          "name": "Carga académica del docente 1",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/reportes/carga-docente/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Casos de error controlados",
+      "item": [
+        {
+          "name": "ERROR 409 - Cuenta duplicada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cuenta\": \"20261001\",\n  \"nombres\": \"Cuenta\",\n  \"apellidos\": \"Repetida\",\n  \"correo\": \"repetida@universidad.edu\",\n  \"fecha_nacimiento\": \"2004-01-01\",\n  \"carrera_id\": 1,\n  \"estado\": \"ACTIVO\"\n}"
+            },
+            "url": "{{api}}/estudiantes"
+          }
+        },
+        {
+          "name": "ERROR 422 - Correo y fecha inválidos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cuenta\": \"55555\",\n  \"nombres\": \"A\",\n  \"apellidos\": \"B\",\n  \"correo\": \"no-es-correo\",\n  \"fecha_nacimiento\": \"2030-01-01\",\n  \"carrera_id\": 1\n}"
+            },
+            "url": "{{api}}/estudiantes"
+          }
+        },
+        {
+          "name": "ERROR 404 - Estudiante inexistente",
+          "request": {
+            "method": "GET",
+            "url": "{{api}}/estudiantes/9999"
+          }
+        },
+        {
+          "name": "ERROR 409 - Requisito pendiente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudiante_id\": 3,\n  \"seccion_id\": 2\n}"
+            },
+            "url": "{{api}}/matriculas"
+          }
+        },
+        {
+          "name": "ERROR 409 - Eliminar carrera con relaciones",
+          "request": {
+            "method": "DELETE",
+            "url": "{{api}}/carreras/1"
+          }
+        }
+      ]
+    }
+  ]
+}
